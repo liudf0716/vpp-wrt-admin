@@ -50,12 +50,12 @@ router.all('/config/route/del', function(req, res, next) {
 
 
 /* vpp snat operation */
-router.all('/config/', function(req, res, next) {
+router.all('/config/nat/snat', function(req, res, next) {
 	v_natplugin.snat_op(req, res, next);
 });
 
 /* vpp dnat operation */
-router.all('/dnat_op', function(req, res, next) {
+router.all('/config/nat/dnat', function(req, res, next) {
 	v_natplugin.dnat_op(req, res, next);
 });
 
