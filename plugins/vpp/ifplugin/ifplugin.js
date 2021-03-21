@@ -28,6 +28,8 @@ async function wan_op(req, res, next) {
 	var if_name = req.if_name;
 	var if_value = req.if_value;
 	if_set(if_name, if_value);
+	
+	req.send({"result":"ok"});
 };
 
 /*
@@ -79,6 +81,8 @@ async function lan_op(req, res, next) {
 	}
 	
 	bd_set(bd_value);
+	
+	req.send({"result":"ok"});
 };
 
 module.exports = {
