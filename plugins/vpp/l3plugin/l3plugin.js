@@ -1,6 +1,8 @@
 const { Etcd3 } = require('etcd3');
 const client = new Etcd3(options = { hosts: '127.0.0.1:2379' });
 
+const gw_key = '/vnf-agent/vpp1/config/vpp/v2/route/vrf/0/dst/0.0.0.0/0/gw/';
+
 /*
  * vpp default gw
  * key:
@@ -9,7 +11,10 @@ const client = new Etcd3(options = { hosts: '127.0.0.1:2379' });
  * '{"dst_network":"0.0.0.0/0","next_hop_addr":"next_hop_addr","outgoing_interface":"G0"}'
  * 
  */
-function gw_op(req, res, next) {
+async function gw_op(req, res, next) {
+	var next_hop_addr = req.next_hop_addr;
+	await client.put(gw_key+next_hop_addr).value(req.body);
+	req.send({"result":"ok"});
 };
 
 /*
