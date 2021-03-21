@@ -7,9 +7,10 @@ const client = new Etcd3(options = { hosts: '127.0.0.1:2379' });
 /*
  * vpp snat operation
  * key:
- * /vnf-agent/vpp1/config/vpp/nat/v2/nat44-global/<settings>
+ * /vnf-agent/vpp1/config/vpp/nat/v2/nat44-global/snat
  * value:
- * 
+ * '{"forwarding":true,"nat_interfaces":[{"name":"G0","is_inside":false,"output_feature":true}]}'
+ *
  */
 function snat_op(req, res, next) {
 }
@@ -19,7 +20,10 @@ function snat_op(req, res, next) {
  * key:
  * /vnf-agent/vpp1/config/vpp/nat/v2/dnat44/<label>
  * value:
- * 
+ * '{"label":"label","st_mappings":
+ * [{"external_interface":"G0","external_port":ex_port,"local_ips":
+ * [{"local_ip":"local_ip","local_port":loc_port}]}],"protocol":TCP-0|UDP-1|ICMP-3}'
+ *
  */
 function dnat_op(req, res, next) {
 }
