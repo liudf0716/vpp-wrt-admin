@@ -6,6 +6,15 @@ const loop_key = '/vnf-agent/vpp1/config/vpp/v2/interfaces/loop0';
 const if_key = '/vnf-agent/vpp1/config/vpp/v2/interfaces/';
 const bd_key = '/vnf-agent/vpp1/config/vpp/l2/v2/bridge-domain/br-lan';
 
+function if_set(if_name, if_value) {
+	var key = if_key + if_name;
+	await client.put(key).value(if_value);	
+}
+
+function bd_set(bd_value) {
+	await client.put(bd_value).value(bd_value);
+}
+
 /* 
  * vpp wan operation 
  * key:
@@ -16,7 +25,9 @@ const bd_key = '/vnf-agent/vpp1/config/vpp/l2/v2/bridge-domain/br-lan';
  *
  */
 function wan_op(req, res, next) {
-	await client.put(wan_key).value(req.body);
+	var if_name = req.if_name;
+	var if_value = req.if_value;
+	if_set(if_name, if_value);
 };
 
 /*
@@ -36,7 +47,38 @@ function wan_op(req, res, next) {
 function lan_op(req, res, next) {
 	var br_ip = req.body.br_ip;
 	var if_lan = req.body.if_lan;
-	await client.put(loop_key).value();
+	var bd_value = {};
+	var bd_bvi_value = {};
+	var bvi_value = {};
+	
+	bd_value['name'] = "br-lan";
+	bd_value['interfaces'] = [];
+	
+	bvi_value['name'] 	= 'loop0';
+	bvi_value['type'] 	= 'SOFTWARE_LOOPBACK';
+	bvi_value['enabled'] 	= true;
+	bvi_value['ip_addressed']	= br_ip;
+	if_set('loop0', bvi_value);
+	
+	bd_bvi_value['name'] 	= 'loop0';
+	bd_bvi_value['bridged_virtual_interface'] = true;
+	bd_value['interfaces'].push(bd_bvi_value);	
+	
+	for (var i = 0; i < if_lan.length(); i++)
+	{
+		var name = if_lan[i].name;
+		var br_child_value = {};
+		var bd_child_value = {};
+		br_child_value['name'] 	= name;
+		br_child_value['type'] 	= 'DPDK';
+		br_child_value['enabled']	= true;
+		if_set(name, br_child_value);
+		
+		bd_child_value['name'] = name;
+		bd_value['interfaces'].push(bd_child_value);
+	}
+	
+	bd_set(bd_value);
 };
 
 module.exports = {
