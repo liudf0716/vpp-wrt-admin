@@ -6,12 +6,12 @@ const loop_key = '/vnf-agent/vpp1/config/vpp/v2/interfaces/loop0';
 const if_key = '/vnf-agent/vpp1/config/vpp/v2/interfaces/';
 const bd_key = '/vnf-agent/vpp1/config/vpp/l2/v2/bridge-domain/br-lan';
 
-function if_set(if_name, if_value) {
+async function if_set(if_name, if_value) {
 	var key = if_key + if_name;
 	await client.put(key).value(if_value);	
 }
 
-function bd_set(bd_value) {
+async function bd_set(bd_value) {
 	await client.put(bd_value).value(bd_value);
 }
 
@@ -24,7 +24,7 @@ function bd_set(bd_value) {
  * '{"name":"G0","type":"DPDK","enabled":true,"set_dhcp_client":true}'
  *
  */
-function wan_op(req, res, next) {
+async function wan_op(req, res, next) {
 	var if_name = req.if_name;
 	var if_value = req.if_value;
 	if_set(if_name, if_value);
@@ -44,7 +44,7 @@ function wan_op(req, res, next) {
  * '{"name":"G1","type":"DPDK","enabled":true}'
  * ...
  */
-function lan_op(req, res, next) {
+async function lan_op(req, res, next) {
 	var br_ip = req.body.br_ip;
 	var if_lan = req.body.if_lan;
 	var bd_value = {};
