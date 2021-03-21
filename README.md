@@ -1,11 +1,11 @@
 # vpp-wrt-admin
 vpp-wrt backend module
 
-# install 
+# how to install 
 npm install
 
-#run 
+# how to run 
 npm run start
 
-#run dev
+# how to run dev
 npm run serverstart
